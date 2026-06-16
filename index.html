@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <!-- KHÓA CỨNG VIEWPORT ĐỂ LUÔN HIỂN THỊ DẠNG DESKTOP -->
+    <meta name="viewport" content="width=850, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>S4TIVA | THE SELECTOR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070a0e; 
+            --panel-bg: rgba(20, 24, 30, 0.85); 
+            --text-raw: #ffffff;
+            --text-muted: #b3b3b3;
+            --rasta-green: #008542;
+            --rasta-yellow: #ffde00;
+            --rasta-red: #da291c;
+            --brutal-border: 4px solid #ffffff;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-raw);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: auto; 
+            position: relative;
+            min-width: 850px; 
+        }
+
+        /* EFFECT 1: CSS Noise Grain Overlay - Lớp bụi nhiễu */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 9999;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* EFFECT 2: NỀN MẶT SÓNG TOÀN MÀN HÌNH */
+        .ocean-surface {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #070a0e, #0f172a, #05070a);
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .wave-bg {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            background-repeat: repeat-x;
+            opacity: 0.15;
+        }
+
+        .wave-bg.layer1 {
+            top: -10%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' d='M0,96L60,112C120,128,240,160,360,165.3C480,171,600,149,720,128C840,107,960,85,1080,90.7C1200,96,1320,128,1380,144L1440,160L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z'%3E%3C/path%3E%3C/svg%3E");
+            animation: wave-drift 25s linear infinite;
+        }
+
+        .wave-bg.layer2 {
+            bottom: 10%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%231e293b' d='M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,154.7C1248,128,1344,128,1392,128L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            opacity: 0.4;
+            animation: wave-drift 18s linear infinite reverse;
+        }
+
+        .wave-bg.layer3 {
+            bottom: -5%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%230f172a' d='M0,160L60,176C120,192,240,224,360,213.3C480,203,600,149,720,144C840,139,960,181,1080,186.7C1200,192,1320,160,1380,144L1440,128L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            opacity: 0.7;
+            animation: wave-drift 12s linear infinite;
+        }
+
+        @keyframes wave-drift {
+            0% { background-position-x: 0px; }
+            100% { background-position-x: 1440px; }
+        }
+
+        /* FIXED BRUTALIST TRANSLATION STICKER */
+        .lang-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            background: var(--rasta-green);
+            color: #fff;
+            border: 3px solid #fff;
+            padding: 10px 15px;
+            font-weight: 900;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #000;
+            transition: all 0.1s ease;
+            letter-spacing: 1px;
+        }
+        .lang-switcher:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000;
+        }
+        .lang-switcher.active-en {
+            background: var(--rasta-red);
+        }
+
+        /* KHUNG CHỨA CỐ ĐỊNH SIZE DESKTOP */
+        .main-wrapper {
+            width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ================= HIỆU ỨNG LÊNH ĐÊNH LỆCH PHA ================= */
+        @keyframes float-header {
+            0% { transform: translateY(0px) rotate(-1deg); }
+            100% { transform: translateY(-8px) rotate(0.5deg); }
+        }
+        @keyframes float-bio {
+            0% { transform: translateY(0px) rotate(0.5deg); }
+            100% { transform: translateY(-12px) rotate(-0.5deg); }
+        }
+        @keyframes float-genres {
+            0% { transform: translateY(0px) rotate(-0.5deg); }
+            100% { transform: translateY(-10px) rotate(1deg); }
+        }
+        @keyframes float-connect {
+            0% { transform: translateY(0px) rotate(1deg); }
+            100% { transform: translateY(-7px) rotate(-1deg); }
+        }
+
+        /* ================= HEADER STYLE ================= */
+        header {
+            background: var(--panel-bg);
+            border: var(--brutal-border);
+            padding: 40px 30px;
+            margin-bottom: 50px;
+            box-shadow: 10px 10px 0px var(--rasta-red);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            backdrop-filter: blur(5px);
+            animation: float-header 6s ease-in-out infinite alternate;
+        }
+
+        .header-left {
+            flex: 1;
+        }
+
+        .profile-photo-container {
+            width: 160px;
+            height: 160px;
+            border: var(--brutal-border);
+            background: #222;
+            overflow: hidden;
+            transform: rotate(4deg);
+            box-shadow: 6px 6px 0px var(--rasta-green);
+            position: relative;
+        }
+
+        .profile-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* FILTER MỚI: SÚT GRAYSCALE, TĂNG ĐẬM MÀU VÀ TƯƠNG PHẢN ĐỂ FLEX NĂNG LƯỢNG */
+            filter: contrast(125%) saturate(135%) brightness(100%);
+        }
+
+        .profile-photo-container::before {
+            content: "";
+            position: absolute;
+            top: -10px; right: -30px;
+            width: 80px; height: 25px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(2px);
+            transform: rotate(45deg);
+            border: 1px dashed rgba(255,255,255,0.5);
+            z-index: 2;
+        }
+
+        .brand-title {
+            font-size: 5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 0.85;
+            margin: 0;
+            letter-spacing: -3px;
+            color: var(--text-raw);
+            text-shadow: 4px 4px 0 var(--rasta-green), 
+                         8px 8px 0 var(--rasta-yellow), 
+                         12px 12px 0 var(--rasta-red);
+        }
+
+        .brand-sub {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 25px;
+            margin-bottom: 5px;
+            color: var(--rasta-yellow);
+            display: inline-block;
+            background: #000;
+            padding: 5px 10px;
+            border: 2px solid var(--text-raw);
+        }
+
+        .brand-team {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .brand-team span {
+            color: var(--text-raw);
+            border-bottom: 2px dashed var(--rasta-green);
+        }
+
+        /* ================= PANELS ================= */
+        .section-box {
+            background: var(--panel-bg);
+            border: var(--brutal-border);
+            padding: 35px 30px;
+            margin-bottom: 40px;
+            position: relative;
+            backdrop-filter: blur(5px);
+            will-change: transform;
+        }
+
+        .box-bio { 
+            box-shadow: 10px 10px 0px var(--rasta-green); 
+            animation: float-bio 7s ease-in-out infinite alternate;
+            animation-delay: 0.5s;
+        }
+        .box-genres { 
+            box-shadow: 10px 10px 0px var(--rasta-yellow); 
+            animation: float-genres 8.5s ease-in-out infinite alternate;
+            animation-delay: 1.2s;
+        }
+        .box-connect { 
+            box-shadow: 10px 10px 0px #000000; 
+            animation: float-connect 6.5s ease-in-out infinite alternate;
+            animation-delay: 0.2s;
+        }
+
+        .section-heading {
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-top: 0;
+            margin-bottom: 25px;
+            display: inline-block;
+            background: var(--text-raw);
+            color: #000;
+            padding: 5px 15px;
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .bio-text {
+            font-size: 1.05rem;
+            font-weight: 400;
+            line-height: 1.7;
+            margin: 0 0 20px 0;
+            text-align: justify;
+        }
+
+        .bio-text mark {
+            background-color: var(--rasta-green);
+            color: #fff;
+            padding: 2px 6px;
+            font-weight: 700;
+        }
+        .bio-text mark.yellow { background-color: var(--rasta-yellow); color: #000; }
+        .bio-text mark.red { background-color: var(--rasta-red); }
+
+        .event-manifesto {
+            margin-top: 25px;
+            border-top: 3px dashed var(--text-muted);
+            padding-top: 25px;
+        }
+
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .event-card {
+            background: #111;
+            border: 2px solid var(--text-raw);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 4px 4px 0px var(--rasta-red);
+        }
+        .event-card:nth-child(even) { box-shadow: 4px 4px 0px var(--rasta-green); }
+        .event-card.featured {
+            grid-column: span 2;
+            background: var(--rasta-yellow);
+            color: #000;
+            border: 2px solid #000;
+            box-shadow: 5px 5px 0px #000;
+        }
+
+        .event-card.featured .event-name { color: #000; font-weight: 900; }
+        .event-card.featured .event-date { background: #000; color: var(--rasta-yellow); }
+
+        .event-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-raw);
+            letter-spacing: 0.5px;
+        }
+
+        .event-date {
+            font-size: 0.75rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: var(--rasta-yellow);
+            color: #000;
+            padding: 2px 6px;
+            align-self: flex-start;
+            margin-top: 8px;
+        }
+
+        .quote-stamp {
+            border: 3px dashed var(--rasta-yellow);
+            padding: 20px;
+            margin-top: 30px;
+            background: #151515;
+            font-style: italic;
+            position: relative;
+        }
+        .quote-stamp::before {
+            content: "“";
+            font-size: 4rem;
+            position: absolute;
+            top: -10px; left: 15px;
+            color: rgba(255,255,255,0.15);
+            font-family: serif;
+        }
+
+        /* ================= GENRES ================= */
+        .genre-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .genre-badge {
+            background: #000;
+            border: 2px solid var(--text-raw);
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0 var(--rasta-green);
+        }
+        .genre-badge:nth-child(2) { box-shadow: 4px 4px 0 var(--rasta-yellow); }
+        .genre-badge:nth-child(3) { box-shadow: 4px 4px 0 var(--rasta-red); }
+        .genre-badge:nth-child(4) { box-shadow: 4px 4px 0 var(--text-raw); }
+        .genre-badge:nth-child(5) { box-shadow: 4px 4px 0 var(--rasta-green); }
+
+        .vinyl-crate {
+            background: #111;
+            border: 3px dashed var(--text-muted);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .vinyl-icon {
+            font-size: 2.5rem;
+            animation: spin 3.5s linear infinite;
+            line-height: 1;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .vinyl-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 0 0 5px 0;
+            color: var(--rasta-yellow);
+        }
+
+        /* ================= SOCIAL LINKS ================= */
+        .social-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #000000;
+            border: 3px solid var(--text-raw);
+            padding: 18px 25px;
+            color: var(--text-raw);
+            text-decoration: none;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            box-shadow: 6px 6px 0px var(--rasta-yellow);
+            transition: all 0.1s ease;
+        }
+
+        .social-btn:nth-child(2) { box-shadow: 6px 6px 0px var(--rasta-green); }
+        .social-btn:nth-child(3) { box-shadow: 6px 6px 0px var(--rasta-red); }
+
+        .social-btn:hover {
+            transform: translate(4px, 4px);
+            box-shadow: 2px 2px 0px #000;
+            background: #1a1a1a;
+        }
+
+        .social-btn::after { content: "➔"; font-size: 1.2rem; }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STICKER ĐỔI NGÔN NGỮ CHẠY ENGINE JS -->
+    <button class="lang-switcher" id="langBtn" onclick="toggleLanguage()">ENG / VI</button>
+
+    <!-- NỀN MẶT SÓNG BIỂN CHẠY TOÀN MÀN HÌNH -->
+    <div class="ocean-surface">
+        <div class="wave-bg layer1"></div>
+        <div class="wave-bg layer2"></div>
+        <div class="wave-bg layer3"></div>
+    </div>
+
+    <div class="main-wrapper">
+
+        <!-- BRAND HEADER -->
+        <header>
+            <div class="header-left">
+                <h1 class="brand-title">S4tiva</h1>
+                <div class="brand-sub" 
+                     data-vi="Vinh Nguyễn / The Selector" 
+                     data-en="Vinh Nguyen / The Selector">Vinh Nguyễn / The Selector</div>
+                <div class="brand-team" 
+                     data-vi="Co-founder of <span>22 Entertainment Vietnam</span>" 
+                     data-en="Co-founder of <span>22 Entertainment Vietnam</span>">Co-founder of <span>22 Entertainment Vietnam</span></div>
+            </div>
+            
+            <div class="profile-photo-container">
+                <!-- FILE ẢNH MỚI CỦA SẾP ĐÃ ĐƯỢC GIỮ NGUYÊN -->
+                <img src="IMG_0272.jpg" alt="S4tiva Profile">
+            </div>
+        </header>
+
+        <!-- SECTION 1: GIỚI THIỆU BẢN THÂN & TUYÊN NGÔN -->
+        <section class="section-box box-bio">
+            <h2 class="section-heading" data-vi="01 // Identity & Manifesto" data-en="01 // Identity & Manifesto">01 // Identity & Manifesto</h2>
+            
+            <p class="bio-text" 
+               data-vi="Một hành trình âm thanh dịch chuyển không ngừng: khởi nguồn từ những tần số nguyên bản của rừng núi <mark>Dalak</mark>, cuốn vào nhịp sống hối hả của đô thị không ngủ <mark class='yellow'>Sài Gòn</mark>, để rồi tìm thấy bến đỗ đích thực nơi đất biển <mark class='red'>Mũi Né</mark>."
+               data-en="A non-stop sonic journey: originating from the raw frequencies of the <mark>Dalak</mark> highlands, swept into the relentless rhythm of the sleepless metropolis of <mark class='yellow'>Saigon</mark>, only to find its ultimate anchorage in the wind-swept coastal lands of <mark class='red'>Mui Ne</mark>.">
+                Một hành trình âm thanh dịch chuyển không ngừng: khởi nguồn từ những tần số nguyên bản của rừng núi <mark>Dalak</mark>, cuốn vào nhịp sống hối hả của đô thị không ngủ <mark class="yellow">Sài Gòn</mark>, để rồi tìm thấy bến đỗ đích thực nơi đất biển <mark class="red">Mũi Né</mark>.
+            </p>
+            
+            <p class="bio-text" 
+               data-vi="Trước năm 2020, anh là người đứng sau <mark class='yellow'>Sativa Chill</mark> (Quận 1) - một không gian cafe bar cực kỳ đình đám tại Sài Gòn. Đến năm 2019, tiếng gọi của biển khơi đưa anh về với Mũi Né. Chính tại đây, cú bén duyên mãnh liệt với Reggae và Dub đã thay đổi tất cả. Nhận ra đây chính là 'tần số tâm hồn' của mình, anh quyết định ở lại để bắt trọn mọi cơ hội từ vùng đất lộng gió này."
+               data-en="Before 2020, he was the mastermind behind <mark class='yellow'>Sativa Chill</mark> (District 1) – a wildly popular cafe-bar spot in Saigon. In 2019, the siren call of the ocean drew him to Mui Ne. It was here that a fierce encounter with Reggae and Dub changed everything. Realizing this was his true 'soul frequency,' he decided to stay and capture every pulse of this breezy land.">
+                Trước năm 2020, anh là người đứng sau <mark class="yellow">Sativa Chill</mark> (Quận 1) - một không gian cafe bar cực kỳ đình đám tại Sài Gòn. Đến năm 2019, tiếng gọi của biển khơi đưa anh về với Mũi Né. Chính tại đây, cú bén duyên mãnh liệt với Reggae và Dub đã thay đổi tất cả. Nhận ra đây chính là 'tần số tâm hồn' của mình, anh quyết định ở lại để bắt trọn mọi cơ hội từ vùng đất lộng gió này.
+            </p>
+            
+            <p class="bio-text" 
+               data-vi="Từ 2020 đến 2024, anh giữ vai trò <mark>Resident DJ</mark> tại <mark class='red'>Kingston Hut Beach Bar</mark> — một tọa độ văn hóa party, điểm hẹn giao lưu của du khách quốc tế lớn nhất nhì Mũi Né."
+               data-en="From 2020 to 2024, he held the mantle of <mark>Resident DJ</mark> at <mark class='red'>Kingston Hut Beach Bar</mark> — one of the biggest cultural party hubs and international tourist melting pots in Mui Ne.">
+                Từ 2020 đến 2024, anh giữ vai trò <mark>Resident DJ</mark> tại <mark class="red">Kingston Hut Beach Bar</mark> — một tọa độ văn hóa party, điểm hẹn giao lưu của du khách quốc tế lớn nhất nhì Mũi Né.
+            </p>
+
+            <div class="event-manifesto">
+                <p class="bio-text" 
+                   data-vi="Nung nấu một lòng đam mê mãnh liệt với âm nhạc nguyên bản và sự tự do tuyệt đối, khao khát lớn nhất của S4tiva là biến <mark class='red'>Mũi Né</mark> thành một trạm phát sóng khổng lồ. Lão muốn kéo những cộng đồng âm nhạc chất lượng nhất, những 'anh em năm châu bốn bể' tụ hội về đây để cùng hòa mình vào những lễ hội âm nhạc và những bữa tiệc bãi biển bất tận."
+                   data-en="Driven by a fierce passion for authentic music and absolute freedom, S4tiva's ultimate vision is to turn <mark class='red'>Mui Ne</mark> into a massive broadcasting station. He aims to pull the finest music communities and 'brothers from all four corners of the world' right here to immerse themselves in endless music festivals and beach parties.">
+                    Nung nấu một lòng đam mê mãnh liệt với âm nhạc nguyên bản và sự tự do tuyệt đối, khao khát lớn nhất của S4tiva là biến <mark class='red'>Mũi Né</mark> thành một trạm phát sóng khổng lồ. Lão muốn kéo những cộng đồng âm nhạc chất lượng nhất, những 'anh em năm châu bốn bể' tụ hội về đây để cùng hòa mình vào những lễ hội âm nhạc và những bữa tiệc bãi biển bất tận.
+                </p>
+                
+                <div class="event-grid">
+                    <div class="event-card featured">
+                        <div class="event-name" 
+                             data-vi="S4tiva là đầu não của Waveline Fest và 22 Ent., các tổ chức chuyên xây dựng các sự kiện lễ hội giải trí âm nhạc văn hóa tại Mũi Né." 
+                             data-en="S4tiva is the mastermind behind Waveline Fest and 22 Ent., organizations specializing in cultural music festivals and entertainment events in Mui Ne.">
+                             S4tiva là đầu não của Waveline Fest và 22 Ent., các tổ chức chuyên xây dựng các sự kiện lễ hội giải trí âm nhạc văn hóa tại Mũi Né.
+                        </div>
+                        <div class="event-date" data-vi="Đầu não / Co-founder" data-en="Mastermind / Co-founder">Đầu não / Co-founder</div>
+                    </div>
+                    <div class="event-card">
+                        <div class="event-name">Breakin Habit Weekly</div>
+                        <div class="event-date">2025</div>
+                    </div>
+                    <div class="event-card">
+                        <div class="event-name">Spring Fest</div>
+                        <div class="event-date">Dec 2025</div>
+                    </div>
+                    <div class="event-card">
+                        <div class="event-name">Christmas Pool Party</div>
+                        <div class="event-date">Dec 2025</div>
+                    </div>
+                    <div class="event-card">
+                        <div class="event-name">Mungo's Hifi</div>
+                        <div class="event-date">Jan 2026</div>
+                    </div>
+                    <div class="event-card">
+                        <div class="event-name" data-vi="Tết Session" data-en="Tet Session">Tết Session</div>
+                        <div class="event-date">Feb 2026</div>
+                    </div>
+                    <div class="event-card">
+                        <div class="event-name">Desert Party</div>
+                        <div class="event-date">May 2026</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: DÒNG NHẠC -->
+        <section class="section-box box-genres">
+            <h2 class="section-heading" data-vi="02 // The Roots & Vibe" data-en="02 // The Roots & Vibe">02 // The Roots & Vibe</h2>
+            <p class="bio-text" style="margin-bottom: 25px;" 
+               data-vi="Đào sâu vào những dòng nhạc mang tính 'gốc rễ' tuy còn kén người nghe tại Việt Nam, anh sử dụng âm thanh như một thứ ngôn ngữ kể chuyện, một liều thuốc tinh thần để khích lệ người nghe. Không dừng lại ở đó, anh sở hữu khả năng kiểm soát sàn nhảy cực kỳ linh hoạt với nhiều hệ sinh thái âm nhạc khác nhau:"
+               data-en="Digging deep into 'root' genres that remain niche in Vietnam, he uses sound as a storytelling language, a spiritual remedy to uplift listeners. Beyond that, he possesses the versatility to command the dancefloor across diverse musical ecosystems:">
+                Đào sâu vào những dòng nhạc mang tính 'gốc rễ' tuy còn kén người nghe tại Việt Nam, anh sử dụng âm thanh như một thứ ngôn ngữ kể chuyện, một liều thuốc tinh thần để khích lệ người nghe. Không dừng lại ở đó, anh sở hữu khả năng kiểm soát sàn nhảy cực kỳ linh hoạt với nhiều hệ sinh thái âm nhạc khác nhau:
+            </p>
+            
+            <div class="genre-grid">
+                <div class="genre-badge">Reggae</div>
+                <div class="genre-badge">Dub</div>
+                <div class="genre-badge">Afrobeat</div>
+                <div class="genre-badge">Techno</div>
+                <div class="genre-badge">Progressive</div>
+            </div>
+
+            <div class="vinyl-crate">
+                <div class="vinyl-icon">💿</div>
+                <div>
+                    <h3 class="vinyl-title" data-vi="Vinyl Collector" data-en="Vinyl Collector">Vinyl Collector</h3>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);" 
+                       data-vi="Sở thích, đam mê và phong cách sống: Tìm kiếm, lưu trữ và chơi những chiếc đĩa than nhuốm màu thời gian."
+                       data-en="Hobby, passion, and lifestyle: Hunting, crate-digging, and spinning time-worn vinyl records.">Sở thích, đam mê và phong cách sống: Tìm kiếm, lưu trữ và chơi những chiếc đĩa than nhuốm màu thời gian.</p>
+                </div>
+            </div>
+
+            <div class="quote-stamp" 
+                 data-vi='"Âm nhạc với tôi là tâm hồn và những câu chuyện, hay đôi khi... chỉ đơn giản thay cho một lời khích lệ."'
+                 data-en='"Music to me is about soul and stories, or sometimes... just simply a word of encouragement."'>
+                "Âm nhạc với tôi là tâm hồn và những câu chuyện, hay đôi khi... chỉ đơn giản thay cho một lời khích lệ."
+            </div>
+        </section>
+
+        <!-- SECTION 3: KẾT NỐI SOCIAL MEDIA -->
+        <section class="section-box box-connect">
+            <h2 class="section-heading" data-vi="03 // Sound System Network" data-en="03 // Sound System Network">03 // Sound System Network</h2>
+            <p class="bio-text" style="margin-bottom: 25px;" 
+               data-vi="Kết nối với hệ thống âm thanh và các set nhạc của S4tiva qua các nền tảng:"
+               data-en="Connect with S4tiva's sound system and mixtapes via these platforms:">Kết nối với hệ thống âm thanh và các set nhạc của S4tiva qua các nền tảng:</p>
+            
+            <div class="social-list">
+                <a href="https://www.mixcloud.com/S4TIVA8/?fbclid=IwZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMzUwNjg1NTMxNzI4AAEe4Unme3MZTNqbLlA8X7A0nTlP6tii9jZUjHhlwTUxz-x9CUvmQPAIwSiwws4_aem_SAfUQSMy4P5O14Nc9PP0bg" class="social-btn" target="_blank">Mixcloud</a>
+                <a href="https://www.facebook.com/share/1AuWhsM2tu/" class="social-btn" target="_blank">Facebook Profile</a>
+                <a href="https://www.instagram.com/s4tiva.8?igsh=MW5rYmhrcmRicG5hcw==" class="social-btn" target="_blank">Instagram</a>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            © 2026 S4TIVA • UNDERGROUND SELECTOR VIA 22 ENTERTAINMENT
+        </footer>
+
+    </div>
+
+    <!-- ENGINE JAVASCRIPT ĐỔI NGÔN NGỮ KHÔNG LOAD LẠI TRANG -->
+    <script>
+        let currentLang = 'vi';
+
+        function toggleLanguage() {
+            const btn = document.getElementById('langBtn');
+            const elements = document.querySelectorAll('[data-vi]');
+            
+            if (currentLang === 'vi') {
+                elements.forEach(el => {
+                    el.innerHTML = el.getAttribute('data-en');
+                });
+                btn.classList.add('active-en');
+                btn.innerText = "VIÊT / ENG";
+                currentLang = 'en';
+            } else {
+                elements.forEach(el => {
+                    el.innerHTML = el.getAttribute('data-vi');
+                });
+                btn.classList.remove('active-en');
+                btn.innerText = "ENG / VI";
+                currentLang = 'vi';
+            }
+        }
+    </script>
+</body>
+</html>
+
